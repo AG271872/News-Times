@@ -29,6 +29,7 @@ const News = (props) => {
     setArticles(parsedData.articles)
     setTotalResults(parsedData.totalResults)
     setLoading(false)
+    setPage(page+1)
     props.setProgress(100);
   }
 
@@ -47,11 +48,21 @@ const News = (props) => {
     setLoading(false)
   };
 
+  const getPaddedText = (desc, reqLength) => {
+    if (desc.length<reqLength) {
+      const paddedDesc = desc + ' '.repeat(reqLength - desc.length)
+      return paddedDesc
+    } else {
+      const truncatedText = desc.slice(0, reqLength)
+      return truncatedText
+    }
+  }
+
   return (
     <>
-      {query === undefined ? <h1 className="text-center" style={{ margin: "35px 0px", marginTop: "90px" }}>Top {capitalizeFirstLetter(props.category)} Headlines</h1> 
-      : articles.length === 0 ? <h1 className="text-center" style={{ margin: "35px 0px", marginTop: "90px" }}>No Search Results found for {capitalizeFirstLetter(query)}</h1> 
-      : <h1 className="text-center" style={{ margin: "35px 0px", marginTop: "90px" }}>Top Headlines for {capitalizeFirstLetter(query)}</h1>}
+      {query === undefined ? <h1 className="text-center" style={{ margin: "35px 0px", marginTop: "90px", color: 'black' }}>Top {capitalizeFirstLetter(props.category)} Headlines</h1> 
+      : articles.length === 0 ? <h1 className="text-center" style={{ margin: "35px 0px", marginTop: "90px", color: 'black' }}>No Search Results found for {capitalizeFirstLetter(query)}</h1> 
+      : <h1 className="text-center" style={{ margin: "35px 0px", marginTop: "90px", color: 'black' }}>Top Headlines for {capitalizeFirstLetter(query)}</h1>}
       <InfiniteScroll
         dataLength={articles.length}
         next={fetchMoreData}
@@ -62,7 +73,7 @@ const News = (props) => {
           <div className="row">
             {articles.map((element, _id) => {
               return <div className="col-md-4" key={_id}>
-                <NewsItem title={element.title ? element.title.slice(0, 55) : ""} description={element.description ? element.description.slice(0, 88) : ""} imageUrl={element.urlToImage}
+                <NewsItem title={element.title ? getPaddedText(element.title, 45) : getPaddedText("", 45)} description={element.description ? getPaddedText(element.description, 88) : getPaddedText("", 88)} imageUrl={element.urlToImage}
                   newsUrl={element.url} author={element.author} date={element.publishedAt} source={element.source.name} />
               </div>
             })}
