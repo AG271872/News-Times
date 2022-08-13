@@ -3,9 +3,11 @@ import NewsItem from './NewsItem'
 import Spinner from './Spinner';
 import PropTypes from 'prop-types'
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useParams } from 'react-router-dom';
 
 const News = (props) => {
 
+  const { query } = useParams()
   const [articles, setArticles] = useState([])
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
@@ -18,7 +20,7 @@ const News = (props) => {
 
   const updateNews = async () => {
     props.setProgress(10);
-    const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}` // to fetch news
+    const url = query === undefined ? `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}` : `https://newsapi.org/v2/top-headlines?q=${query}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`
     setLoading(true)
     let data = await fetch(url);
     props.setProgress(30);
@@ -31,12 +33,12 @@ const News = (props) => {
   }
 
   useEffect(() => {
-    document.title = `${capitalizeFirstLetter(props.category)} - NewsApp`
+    document.title = `${capitalizeFirstLetter(props.category)} - News Times`
     updateNews();
   }, [])
 
   const fetchMoreData = async () => {
-    const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page+1}&pageSize=${props.pageSize}` // to fetch news
+    const url = query === undefined ? `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}` : `https://newsapi.org/v2/top-headlines?q=${query}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`
     setPage(page + 1);
     let data = await fetch(url);
     let parsedData = await data.json();
@@ -47,7 +49,9 @@ const News = (props) => {
 
   return (
     <>
-      <h1 className="text-center" style={{ margin: "35px 0px", marginTop: "90px" }}>NewsApp - Top {capitalizeFirstLetter(props.category)} Headlines</h1>
+      {query === undefined ? <h1 className="text-center" style={{ margin: "35px 0px", marginTop: "90px" }}>Top {capitalizeFirstLetter(props.category)} Headlines</h1> 
+      : articles.length === 0 ? <h1 className="text-center" style={{ margin: "35px 0px", marginTop: "90px" }}>No Search Results found for {capitalizeFirstLetter(query)}</h1> 
+      : <h1 className="text-center" style={{ margin: "35px 0px", marginTop: "90px" }}>Top Headlines for {capitalizeFirstLetter(query)}</h1>}
       <InfiniteScroll
         dataLength={articles.length}
         next={fetchMoreData}
