@@ -10,7 +10,7 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="navbar fixed-top navbar-expand-lg navbar-dark" style={{backgroundColor: '#000203'}}>
+    <nav className="navbar fixed-top navbar-expand-lg navbar-dark" style={{ backgroundColor: '#000203' }}>
       <div className="container-fluid">
         <Link className="navbar-brand text-info fw-bold" to="/">News Times</Link>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,8 +26,9 @@ const Navbar = () => {
             <li className="nav-item"><Link className="nav-link text-info" to="/sports">Sports</Link></li>
             <li className="nav-item"><Link className="nav-link text-info" to="/entertainment">Entertainment</Link></li>
           </ul>
-          <form className="d-flex" role="search" onSubmit={() => searchNews()}>
-            <input value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} className="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
+
+          <form className="d-flex mr-5 p-2" role="search" onSubmit={() => searchNews()}>
+            <input value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
             <button className="btn btn-outline-info" type="submit">Search</button>
           </form>
         </div>
